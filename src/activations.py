@@ -54,6 +54,8 @@ class Softmax:
     각 샘플의 로짓(logit)을 클래스별 확률로 바꿉니다.
     exp 계산 전에 행별 최댓값을 빼면 큰 숫자에서 overflow가 나는 것을 줄일 수 있습니다.
     """
+    def __init__(self):
+      None
 
     def forward(self, x):
         """
@@ -63,14 +65,20 @@ class Softmax:
         Returns:
             (batch_size, num_classes) 확률. 각 행의 합은 1입니다.
         """
-        # TODO: 수치 안정성을 위해 row별 max를 뺀 뒤 softmax 확률을 계산하세요.
+        # 수치 안정성을 위해 row별 max를 뺀 뒤 softmax 확률을 계산하세요.
         # 힌트: np.max(..., axis=1, keepdims=True), np.exp, np.sum을 사용합니다.
-        raise NotImplementedError("Softmax.forward를 구현하세요.")
+
+        c = np.max(x, axis=1, keepdims=True)  #{[1행에서 가장 큰 값],[2행에서 가장 큰 값]}
+        exp_x = np.exp(x-c)
+        sum_exp_x = np.sum(exp_x, axis=1, keepdims=True)
+        y = exp_x / sum_exp_x
+
+        return y
 
     def backward(self, dout):
         """
         Softmax와 Cross Entropy를 함께 미분한 gradient를 train()에서 직접 만들기 때문에
         여기서는 받은 gradient를 그대로 통과시킵니다.
         """
-        # TODO: train()에서 만든 gradient를 그대로 반환하세요.
-        raise NotImplementedError("Softmax.backward를 구현하세요.")
+        # train()에서 만든 gradient를 그대로 반환하세요.
+        return dout
