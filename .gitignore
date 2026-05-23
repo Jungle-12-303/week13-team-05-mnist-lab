@@ -30,4 +30,6 @@ htmlcov/
 *.swp
 *~
 
-docs/*
+# 로컬
+local/
+tmp/
