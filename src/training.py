@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from losses import cross_entropy_loss
-
+from util import shuffle_dataset
 
 def train(model, optimizer, x_train, y_train, epochs=20, batch_size=128):
     """
@@ -18,9 +18,37 @@ def train(model, optimizer, x_train, y_train, epochs=20, batch_size=128):
     Returns:
         loss_history: epoch별 평균 손실 리스트
     """
-    # TODO: epoch마다 데이터를 섞고, batch 단위로 forward/loss/backward/update를 수행하세요.
-    # 힌트: Softmax + CrossEntropy 결합 gradient는 y_pred copy에서 정답 위치에 1을 빼서 만듭니다.
-    raise NotImplementedError("train을 구현하세요.")
+    # epoch마다 데이터를 섞고, batch 단위로 forward/loss/backward/update를 수행하세요.
+    train_size = x_train.shape[0]
+    loss_history = []
+    
+    for epoch in range(epochs):
+        x_train, y_train = shuffle_dataset(x_train, y_train)
+        epoch_losses = []
+
+        for start in range(0, train_size, batch_size):
+            end = start + batch_size
+
+            x_batch = x_train[start:end]
+            y_batch = y_train[start:end]
+
+            y_pred = model.forward(x_batch, train = True)
+            loss = cross_entropy_loss(y_pred, y_batch)
+            epoch_losses.append(loss)
+
+            # 힌트: Softmax + CrossEntropy 결합 gradient는 y_pred copy에서 정답 위치에 1을 빼서 만듭니다.
+            dout = y_pred.copy()
+            dout[np.arange(x_batch.shape[0]), y_batch] -= 1
+            dout = dout / x_batch.shape[0]
+
+            # optimizer.update()는 값을 반환하지 않고 model.params를 직접 갱신합니다.
+            grads = model.backward(dout)
+            optimizer.update(model.params, grads)
+            
+        avg_loss = sum(epoch_losses) / len(epoch_losses)
+        loss_history.append(avg_loss)
+
+    return loss_history
 
 
 def evaluate(model, x, y):
