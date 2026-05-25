@@ -82,6 +82,13 @@ class BatchNorm:
         self.running_var = np.zeros_like(beta)
         self.eps = 1e-7
 
+        # backward 시에 사용할 중간 데이터
+        self.batch_size = None
+        self.sc = None
+        self.std = None
+        self.dgamma = None
+        self.dbeta = None
+
     def forward(self, x, train=True):
         """
         Args:
@@ -91,9 +98,34 @@ class BatchNorm:
         Returns:
             정규화 후 gamma, beta가 적용된 배열
         """
-        # TODO: train=True에서는 batch mean/var로 정규화하고 running 통계를 갱신하세요.
-        # TODO: train=False에서는 running_mean/running_var를 사용하세요.
-        raise NotImplementedError("BatchNorm.forward를 구현하세요.")
+        self.input_shape = x.shape
+        if x.ndim < 2:
+            x = x.reshape(x.shape[0], -1)
+        
+        # train=True에서는 batch mean/var로 정규화하고 running 통계를 갱신하세요.
+        if train:
+            mu = np.mean(x,axis=0)
+            xc = x - mu
+            var = np.mean(xc**2, axis=0)
+            std = np.sqrt(var + self.eps)
+            xn = xc / std
+
+            self.batch_size = x.shape[0]
+            self.xc = xc
+            self.xn = xn
+            self.std = std
+            # 이전까지 누적된 running_mean에 현재 배치 평균(mu)을 일부 반영해 이동평균을 갱신한다.
+            self.running_mean = self.momentum * self.running_mean + (1-self.momentum) * mu
+            # 이전까지 누적된 running_var에 현재 배치 분산(var)을 일부 반영해 이동평균을 갱신한다.
+            self.running_var = self.momentum * self.running_var + (1-self.momentum) * var            
+        # train=False에서는 running_mean/running_var를 사용하세요.
+        else:
+            xc = x - self.running_mean
+            xn = xc / ((np.sqrt(self.running_var + self.eps)))
+        
+        out = self.gamma * xn + self.beta
+        # 계산 후 원래 shape로 복원
+        return out.reshape(*self.input_shape)
 
     def backward(self, dout):
         """
@@ -105,11 +137,29 @@ class BatchNorm:
         Returns:
             dx: BatchNorm 입력 x에 대한 gradient
         """
-        # TODO: self.dbeta, self.dgamma, dx를 계산하세요.
+        # self.dbeta, self.dgamma, dx를 계산하세요.
         # 힌트: 먼저 dbeta와 dgamma shape가 beta/gamma와 같은지 확인합니다.
-        raise NotImplementedError("BatchNorm.backward를 구현하세요.")
+        self.input_shape = dout.shape
+        if dout.ndim < 2:
+            N = dout.shape
+            dout = dout.reshape(N, -1)
 
+        dbeta = dout.sum(axis=0)
+        dgamma = np.sum(self.xn * dout, axis=0)
+        dxn = self.gamma * dout
+        dxc = dxn / self.std
+        dstd = -np.sum((dxn * self.xc) / (self.std * self.std), axis=0)
+        dvar = 0.5 * dstd / self.std
+        dxc += (2.0 / self.batch_size) * self.xc * dvar
+        dmu = np.sum(dxc, axis=0)
+        dx = dxc - dmu / self.batch_size
+        
+        self.dgamma = dgamma
+        self.dbeta = dbeta
 
+        dx = dx.reshape(*self.input_shape)
+        return dx
+    
 class Dropout:
     """
     Dropout.
