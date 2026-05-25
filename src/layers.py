@@ -141,7 +141,7 @@ class BatchNorm:
         # 힌트: 먼저 dbeta와 dgamma shape가 beta/gamma와 같은지 확인합니다.
         self.input_shape = dout.shape
         if dout.ndim < 2:
-            N = dout.shape
+            N = dout.shape[0]
             dout = dout.reshape(N, -1)
 
         dbeta = dout.sum(axis=0)

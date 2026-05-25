@@ -55,7 +55,7 @@ class Softmax:
     exp 계산 전에 행별 최댓값을 빼면 큰 숫자에서 overflow가 나는 것을 줄일 수 있습니다.
     """
     def __init__(self):
-      None
+        pass
 
     def forward(self, x):
         """
