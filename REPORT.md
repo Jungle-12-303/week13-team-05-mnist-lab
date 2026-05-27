@@ -1,4 +1,4 @@
-<img width="1138" height="376" alt="다운로드" src="https://github.com/user-attachments/assets/1c50c672-a956-4089-be35-a9b908584b42" /># MNIST 손글씨 숫자 인식 과제 보고서
+# MNIST 손글씨 숫자 인식 과제 보고서
 
 ## 0. 팀원
 
