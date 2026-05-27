@@ -21,7 +21,8 @@
 
 현재 구현한 모델은 28x28 이미지를 784차원 벡터로 펼친 뒤, 두 개의 은닉층과 하나의 출력층을 통과하는 다층 퍼셉트론(MLP) 구조이다.
 
-<img width="1138" height="376" alt="다운로드" src="https://github.com/user-attachments/assets/45ec2eef-3241-49a6-aa67-823ec597e403" />
+<img width="1919" height="820" alt="image" src="https://github.com/user-attachments/assets/f2a8d3a9-1eb2-42bb-9936-8e682574fd42" />
+
 
 | 구분 | 내용 |
 | --- | --- |
