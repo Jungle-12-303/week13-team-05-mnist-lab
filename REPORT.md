@@ -185,13 +185,12 @@ README 기준에 맞게 Python 3.11 계열 Conda 환경에서 최종 테스트�
 | --- | --- |
 | 학습 데이터 | MNIST train set, 60,000개 |
 | 테스트 데이터 | MNIST test set, 10,000개 |
-| epochs | 1 |
-| batch_size | 128 |
+| <p>$\Huge\mathbf{\color{red}{epochs}}$</p> | <p>$\Huge\mathbf{\color{red}{1}}$</p> || batch_size | 128 |
 | optimizer | Adam |
 | learning rate | 0.001 |
 | Dropout ratio | 0.5 |
 | train loss | 0.4135 |
-| test accuracy | 95.63% |
+| <p>$\Huge\mathbf{\color{red}{test\ accuracy}}$</p> | <p>$\Huge\color{red}{\textbf{95.63\%}}$</p> |
 | 총 파라미터 수 | 537,354 |
 | 학습 및 평가 시간 | 약 28.88초 |
 
@@ -206,7 +205,7 @@ README 기준에 맞게 Python 3.11 계열 Conda 환경에서 최종 테스트�
 | 학습 데이터 | MNIST train set, 60,000개 |
 | 테스트 데이터 | MNIST test set, 10,000개 |
 | seed | 42 |
-| epochs | 20 |
+| <p>$\Huge\mathbf{\color{red}{epochs}}$</p> | <p>$\Huge\mathbf{\color{red}{20}}$</p> |
 | batch_size | 128 |
 | optimizer | Adam |
 | learning rate | 0.001 |
@@ -215,7 +214,7 @@ README 기준에 맞게 Python 3.11 계열 Conda 환경에서 최종 테스트�
 | Dropout ratio | 0.5 |
 | 초기 train loss | 0.4139 |
 | 최종 train loss | 0.0430 |
-| test accuracy | 98.52% |
+| <p>$\Huge\mathbf{\color{red}{test\ accuracy}}$</p> | <p>$\Huge\color{red}{\textbf{98.52%}}$</p> |
 | 총 파라미터 수 | 537,354 |
 | 데이터 로드 시간 | 2.3784초 |
 | 학습 시간 | 392.8926초, 약 6분 32.89초 |
