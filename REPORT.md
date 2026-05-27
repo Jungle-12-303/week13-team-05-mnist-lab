@@ -243,18 +243,34 @@ loss는 1 epoch의 0.4139에서 20 epoch의 0.0430까지 전반적으로 감소�
 
 현재 구현을 통해 확인한 내용은 다음과 같다.
 
-- Forward 단계에서는 각 layer가 입력을 받아 다음 layer로 전달하고, backward에서 필요한 중간 값을 저장해야 한다.
-- Cross Entropy Loss는 정답 클래스의 예측 확률에 `log`를 적용하여 계산하며, `np.clip`으로 `log(0)`을 방지했다.
-- Softmax와 Cross Entropy를 함께 사용할 때는 `y_pred`에서 정답 클래스 위치만 1을 빼는 방식으로 출력층 gradient를 만들 수 있다.
-- BatchNorm은 학습 시 현재 batch의 평균과 분산을 사용하고, 평가 시 running mean과 running variance를 사용한다.
-- Dropout은 학습 시 무작위 mask를 적용하고, 평가 시 고정 비율로 scale한다.
-- Optimizer는 gradient를 사용해 `model.params`를 직접 갱신하며, `update()`의 반환값은 사용하지 않는다.
-
-- 1 epoch 연습 실행에서는 테스트 정확도 95.63%를 기록하여 학습 파이프라인이 정상 동작함을 확인했다.
-- 20 epoch 최종 학습에서는 테스트 정확도 98.52%를 기록하여 최소 목표 95%와 권장 목표 97%를 모두 달성했다.
-- loss는 0.4139에서 0.0430까지 감소하여 학습이 정상적으로 진행되었음을 확인했다.
-- 기본 설정만으로 목표 정확도를 넘었기 때문에 별도의 하이퍼파라미터 탐색은 수행하지 않았다.
-- 추가 개선을 한다면 Dropout ratio, learning rate, epoch 수를 비교하여 정확도와 과적합 여부를 함께 확인할 수 있다.
+<ul>
+  <li>
+    이번 과제를 통해 NumPy만으로 신경망의
+    <code>Forward → Loss → Backward → Optimizer Update</code>
+    흐름을 직접 구현했다.
+  </li>
+  <li>
+    20 epoch 학습에서 loss가 감소하며 테스트 정확도 98.52%를 달성했다.
+  </li>
+  <li>
+    ReLU, Affine, BatchNorm, Dropout, Softmax를 각각 구현하는 것보다,
+    각 계층의 순전파와 역전파가 전체 학습 과정 안에서 어떻게 연결되는지
+    이해하는 것이 가장 어려웠다.
+  </li>
+  <li>
+    구현과 디버깅, 테스트를 반복하면서 역전파는 단순한 수식 계산이 아니라,
+    손실 함수에서 나온 오차 정보를 각 계층이 자신의 역할에 맞게 전달하고
+    파라미터 업데이트로 이어지게 만드는 과정임을 이해할 수 있었다.
+  </li>
+  <li>
+    다만 제한된 시간으로 기본 구현과 목표 정확도 달성에 집중했기 때문에,
+    다른 활성화 함수나 optimizer, learning rate, dropout ratio별 비교 실험은
+    충분히 수행하지 못했다.
+  </li>
+  <li>
+    추후에는 여러 설정을 비교하고 과적합 여부까지 함께 분석해보고 싶다.
+  </li>
+</ul>
 
 ---
 
